@@ -8,10 +8,11 @@ import DiskUsage from "../../components/admin/shares/DiskUsage";
 import useTranslate from "../../hooks/useTranslate.hook";
 import shareService from "../../services/share.service";
 import { MyShare } from "../../types/share.type";
+import { AdminShare } from "../../components/admin/shares/ManageShareTable";
 import toast from "../../utils/toast.util";
 
 const Shares = () => {
-  const [shares, setShares] = useState<MyShare[]>([]);
+  const [shares, setShares] = useState<AdminShare[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const modals = useModals();
@@ -43,7 +44,42 @@ const Shares = () => {
       onConfirm: async () => {
         shareService
           .remove(share.id)
-          .then(() => setShares(shares.filter((v) => v.id != share.id)))
+          .then(() =>
+            setShares((current) => current.filter((v) => v.id != share.id)),
+          )
+          .catch(toast.axiosError);
+      },
+    });
+  };
+
+  // zignixx: Zwangsloeschung, auch wenn Dateien noch offen sind
+  const forceDeleteShare = (share: MyShare) => {
+    modals.openConfirmModal({
+      title: t("admin.shares.force-delete.title", { id: share.id }),
+      children: (
+        <Text size="sm">
+          <FormattedMessage id="admin.shares.force-delete.description" />
+        </Text>
+      ),
+      labels: {
+        confirm: t("admin.shares.force-delete"),
+        cancel: t("common.button.cancel"),
+      },
+      confirmProps: { color: "red" },
+      onConfirm: async () => {
+        shareService
+          .forceRemove(share.id)
+          .then((res) => {
+            setShares((current) => current.filter((v) => v.id != share.id));
+            if (res.filesRemoved)
+              toast.success(t("admin.shares.force-delete.success"));
+            else
+              toast.error(
+                t("admin.shares.force-delete.files-left", {
+                  error: res.fileError ?? "",
+                }),
+              );
+          })
           .catch(toast.axiosError);
       },
     });
@@ -73,6 +109,7 @@ const Shares = () => {
           )
         }
         deleteShare={deleteShare}
+        forceDeleteShare={forceDeleteShare}
         isLoading={isLoading}
       />
       <Space h="xl" />

@@ -362,6 +362,34 @@ export default {
   "admin.shares.edit.delete.description":
     "Do you really want to delete this share?",
 
+  // zignixx
+  "admin.shares.status.active": "Active",
+  "admin.shares.status.never": "Never expires",
+  "admin.shares.status.expired": "Expired",
+  "admin.shares.status.incomplete": "Incomplete",
+  "admin.shares.stats.shares": "Shares",
+  "admin.shares.stats.active": "Active",
+  "admin.shares.stats.expired": "Expired",
+  "admin.shares.stats.files": "Files",
+  "admin.shares.stats.size": "Total size",
+  "admin.shares.search.placeholder": "Search ID, name, creator, recipient or file name …",
+  "admin.shares.filter.all": "All",
+  "admin.shares.filter.active": "Active",
+  "admin.shares.filter.expired": "Expired",
+  "admin.shares.filter.incomplete": "Incomplete",
+  "admin.shares.result-count": "{count} of {total} shares",
+  "admin.shares.expand-all": "Expand all",
+  "admin.shares.collapse-all": "Collapse all",
+  "admin.shares.table.files": "Files",
+  "admin.shares.unnamed": "No name",
+  "admin.shares.open": "Open share",
+  "admin.shares.no-files": "This share contains no files.",
+  "admin.shares.empty": "No shares match the current search.",
+  "admin.shares.force-delete": "Force delete",
+  "admin.shares.force-delete.title": "Force delete share: {id}",
+  "admin.shares.force-delete.description": "Removes the share from the database even if its files cannot be deleted right away. Use this when a normal delete fails.",
+  "admin.shares.force-delete.success": "Share and files deleted.",
+  "admin.shares.force-delete.files-left": "Share removed, but files could not be deleted: {error}",
   // END /admin/shares
 
   // /upload

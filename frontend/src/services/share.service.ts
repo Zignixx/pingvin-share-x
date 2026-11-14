@@ -60,6 +60,19 @@ const getMetaData = async (id: string): Promise<ShareMetaData> => {
   return (await api.get(`shares/${id}/metaData`)).data;
 };
 
+// zignixx: Admin-Zwangsloeschung
+const forceRemove = async (
+  id: string,
+): Promise<{
+  id: string;
+  recordRemoved: boolean;
+  filesRemoved: boolean;
+  fileError?: string;
+}> => {
+  if (!isValidId(id)) throw new Error("Invalid ID");
+  return (await api.delete(`shares/${id}/force`)).data;
+};
+
 const remove = async (id: string) => {
   if (!isValidId(id)) throw new Error("Invalid ID");
   await api.delete(`shares/${id}`);
@@ -419,6 +432,7 @@ export default {
   getFromOwner,
   update,
   remove,
+  forceRemove,
   expire,
   getMetaData,
   doesFileSupportPreview,
