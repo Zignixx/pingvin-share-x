@@ -502,6 +502,48 @@ export class ShareService {
     await this.prisma.share.delete({ where: { id: shareId } });
   }
 
+  // zignixx: Zwangsloeschung fuer Admins. Bricht eine laufende ZIP-Erstellung ab,
+  // versucht die Dateien mehrfach zu entfernen und loescht den Datensatz in jedem Fall.
+  async forceRemove(shareId: string) {
+    if (!/^[a-zA-Z0-9_-]+$/.test(shareId))
+      throw new NotFoundException(this.i18n.t("share.notFound"));
+
+    const share = await this.prisma.share.findUnique({
+      where: { id: shareId },
+    });
+
+    this.activeZipBuilds.delete(shareId);
+
+    let filesRemoved = true;
+    let fileError: string | undefined;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        await this.fileService.deleteAllFiles(shareId);
+        filesRemoved = true;
+        fileError = undefined;
+        break;
+      } catch (e) {
+        filesRemoved = false;
+        fileError = e instanceof Error ? e.message : String(e);
+        this.logger.warn(
+          `Force delete ${shareId}: removing files failed (attempt ${attempt}): ${fileError}`,
+        );
+        await new Promise((r) => setTimeout(r, 500 * attempt));
+      }
+    }
+
+    let recordRemoved = false;
+    if (share) {
+      await this.prisma.share.delete({ where: { id: shareId } });
+      recordRemoved = true;
+    }
+
+    this.logger.log(
+      `Force delete ${shareId}: record=${recordRemoved} files=${filesRemoved}`,
+    );
+    return { id: shareId, recordRemoved, filesRemoved, fileError };
+  }
+
   async expire(shareId: string) {
     const share = await this.prisma.share.findUnique({
       where: { id: shareId },

@@ -136,6 +136,14 @@ export class ShareController {
     await this.shareService.remove(id, isDeleterAdmin);
   }
 
+  // zignixx: Admin-Zwangsloeschung. Loescht den DB-Eintrag auch dann, wenn das
+  // Entfernen der Dateien fehlschlaegt, und meldet zurueck, was passiert ist.
+  @Delete(":id/force")
+  @UseGuards(JwtGuard, AdministratorGuard)
+  async forceRemove(@Param("id") id: string) {
+    return await this.shareService.forceRemove(id);
+  }
+
   @Post(":id/expire")
   @HttpCode(200)
   @UseGuards(IdValidation, ShareOwnerGuard)
