@@ -459,7 +459,7 @@ const ManageShareTable = ({
       </Group>
 
       <Paper withBorder radius="md" style={{ overflowX: "auto" }}>
-        <Table verticalSpacing="xs" fontSize="sm" style={{ minWidth: 1000 }}>
+        <Table verticalSpacing="xs" fontSize="sm" style={{ minWidth: 1100 }}>
           <thead>
             <tr>
               <th style={{ width: 36 }} />
@@ -511,7 +511,7 @@ const ManageShareTable = ({
                         <td>
                           <Text className={classes.mono}>{share.id}</Text>
                         </td>
-                        <td style={{ maxWidth: 280 }}>
+                        <td style={{ maxWidth: 360, minWidth: 180 }}>
                           <Group spacing={6} noWrap>
                             <Text size="sm" weight={500} lineClamp={1}>
                               {share.name || (

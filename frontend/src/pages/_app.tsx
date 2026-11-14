@@ -343,7 +343,10 @@ function App({ Component, pageProps }: AppProps) {
                       >
                         <div>
                           <Header />
-                          <Container>
+                          {/* zignixx: breitere Seite fuer die Freigaben-Verwaltung */}
+                          <Container
+                            size={route === "/admin/shares" ? 1600 : undefined}
+                          >
                             <Component {...pageProps} />
                           </Container>
                         </div>
